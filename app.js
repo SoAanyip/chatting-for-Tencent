@@ -1,9 +1,31 @@
-var app = require('express')();
+var express = require('express');
+var app = express();
 var http = require('http').Server(app);
+var io = require('socket.io')(http);
+var path = require('path');
+
+app.use(express.static(__dirname + '/app'));
+
+/*app.use(function(req,res){
+	res.sendFile(path.join(__dirname, '/app', 'index.html'));
+	//res.sendfile('./app/index.html');
+})*/
 
 app.get('/', function(req, res){
-  res.send('<h1>Hello world</h1>');
+  res.sendFile(path.join(__dirname, '/app', 'index.html'));
 });
+
+io.on('connection',function(socket){
+	console.log('an user here!');
+	socket.broadcast.emit('welcome');
+	socket.on('sendAllMessage',function(msg){
+		io.emit('sendAllMessage',msg);
+		console.log('message:' + msg);
+	});
+	socket.on('disconnect',function(){
+		console.log('an user left!');
+	});
+})
 
 http.listen(3000, function(){
   console.log('listening on *:3000');
