@@ -4,17 +4,18 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var path = require('path');
 
+/*define where static files are*/
 app.use(express.static(__dirname + '/app'));
 
 /*app.use(function(req,res){
 	res.sendFile(path.join(__dirname, '/app', 'index.html'));
 	//res.sendfile('./app/index.html');
 })*/
-
 app.get('/', function(req, res){
   res.sendFile(path.join(__dirname, '/app', 'index.html'));
 });
 
+/*server functions*/
 io.on('connection',function(socket){
 	console.log('an user here!');
 	socket.broadcast.emit('welcome');
@@ -27,6 +28,7 @@ io.on('connection',function(socket){
 	});
 })
 
+/*get start*/
 http.listen(3000, function(){
   console.log('listening on *:3000');
 });

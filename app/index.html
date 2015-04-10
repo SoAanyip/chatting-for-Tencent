@@ -21,15 +21,20 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="components/jquery/dist/jquery.min.js"></script>
     <script>
+      /*client connect*/
       var socket = io();
+      /*client functions*/
       $('form').submit(function(){
-        socket.emit('sendAllMessage',$('#m').val());
-        $('#m').val('');
-        return false;
+      socket.emit('sendAllMessage',$('#m').val());
+      $('#m').val('');
+      return false;
       })
       socket.on('sendAllMessage',function(msg){
-        $('#messages').append($('<li>').text(msg));
+      $('#messages').append($('<li>').text(msg));
       });
+      socket.on('welcome',function(){
+      //alert('hello, welcome to this room!');
+      })
     </script>
   </body>
 </html>
