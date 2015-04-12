@@ -1,40 +1,119 @@
 <!doctype html>
-<html>
+<html lang="zh-cmn-Hans">
   <head>
     <title>Socket.IO chat</title>
     <link rel="stylesheet" href="./styles/normalize.min.css">
+    <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.min.css">
 
     <style>
-      form { background: #ff0; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form input { border: 0;  width: 90%; margin-right: .5%; }
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
+      html{
+        height: 100%;
+        overflow-x: hidden;
+        font-size: 16px;
+      }
+      body{
+        font-family:'helvetica neue', arial,'hiragino sans gb', stheiti,'microsoft yahei', 'wenquanyi micro hei',sans-serif;
+      }
+      #wrap{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+      }
+      #msgForm{
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: auto;
+        margin: 0 5%;
+      }
+      #msgCon{
+        font-size: 1.2rem;
+        height: 100%;
+        overflow-y: scroll;
+      }
+      #msgCon > div:nth-child(odd){
+        background-color: #eee;
+      }
+       #msgCon > div:nth-child(even){
+        background-color: #ccc;
+      }
+      .oneMsgBox{
+        margin-bottom: 2rem;
+      }
+      #sendBtn{
+        width: 100%;
+      }
     </style>
   </head>
   <body>
-    <ul id="messages"></ul>
-    <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
-    </form>
+    <div id="wrap">
+      <div id="msgCon" class="container" ng-controller="msgShow">
+        <!-- <div class="oneMsgBox" ng-repeat="msg in msgs">
+          <div class="">
+            <span class="userName">{{msg.user}}说：</span> ( <span>{{msg.time}}</span> )
+          </div>
+          <div class=" msgText">
+            {{msg.text}}
+          </div>
+        </div> -->
+        <div class="oneMsgBox">
+          <div class="">
+            <span class="userName">ABC说：</span> | <span class="msgTime">12:22:21</span>
+          </div>
+          <div class="msgText">
+            哈哈哈啊哈
+          </div>
+        </div>
+      </div>
+      <form action="" class="form-horizontal" id="msgForm">
+         <div class="form-group">
+           <label for="megInput" class="sr-only">请输入你要说的话</label> 
+           <div class="col-md-10">
+             <textarea class="form-control" id="msgInput" rows="1" placeholder="请输入你要说的话"></textarea>
+           </div>
+           <div class="col-md-2"><button type="submit" class="btn btn-primary btn-lg" id="sendBtn">Send</button></div>
+         </div>
+      </form>
+    </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="components/jquery/dist/jquery.min.js"></script>
+    <script src="components/angular/angular.min.js"></script>
     <script>
       /*client connect*/
       var socket = io();
       /*client functions*/
-      $('form').submit(function(){
-      socket.emit('sendAllMessage',$('#m').val());
-      $('#m').val('');
-      return false;
+      var msgs = [];
+      $('#msgForm').submit(function(){
+        socket.emit('sendAllMessage',$('#msgInput').val());
+        $('#msgInput').val('');
+        return false;
       })
       socket.on('sendAllMessage',function(msg){
-      $('#messages').append($('<li>').text(msg));
+        msgs.push(msg);
+        console.log(msg);
+        var oneMsgBox = $('.oneMsgBox').eq(0).clone();
+        oneMsgBox.find('.userName').html(msg.name);
+        oneMsgBox.find('.msgTime').html(msg.time);
+        oneMsgBox.find('.msgText').html(msg.text);
+        $('#msgCon').append(oneMsgBox);
       });
       socket.on('welcome',function(){
       //alert('hello, welcome to this room!');
       })
+
+      /*angular..*/
+      /*var ngApp = angular.module('chat',[]);
+      ngApp.factory('socketService',['$rootScope',function($rootScope){
+        return {
+          al:function(){
+            alert(socket);
+          }
+        }
+      }])
+      ngApp.controller('msgShow',['$scope,socketService',function($scope,socketService){
+      }])*/
+      
     </script>
   </body>
 </html>
