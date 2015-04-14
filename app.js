@@ -33,7 +33,8 @@ var num = 0;
 io.on('connection',function(socket){
 	console.log('an user here!');
 	socket.broadcast.emit('welcome');
-	socket.on('sendAllMessage',function(text){
+	socket.on('sendAllMessage',function(text,name){
+		/*text.split('\/n').join('<br/>');*/
 		var date = new Date();
 		var hour = date.getHours();
 		var min = date.getMinutes();
@@ -42,13 +43,27 @@ io.on('connection',function(socket){
 		if(min.length === 1) min = '0'+min;
 		if(sec.length === 1) sec = '0'+sec;
 		var msg = {
-			name:'123',
+			name:name,
 			time:hour+':'+min+':'+sec,
 			text:text
 		}
 		io.emit('sendAllMessage',msg);
 		console.log('message:' + text);
 	});
+	socket.on('newUser',function(name){
+		var date = new Date();
+		var hour = date.getHours();
+		var min = date.getMinutes();
+		var sec = date.getSeconds();
+		if(hour.length === 1) hour = '0'+hour;
+		if(min.length === 1) min = '0'+min;
+		if(sec.length === 1) sec = '0'+sec;
+		var user = {
+			time:hour+':'+min+':'+sec,
+			name:name
+		}
+		io.emit('newUser',user);
+	})
 	socket.on('disconnect',function(){
 		console.log('an user left!');
 	});

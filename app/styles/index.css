@@ -1,0 +1,64 @@
+html{
+  overflow-x: hidden;
+  font-size: 16px;
+}
+body{
+  font-family:'helvetica neue', arial,'hiragino sans gb', stheiti,'microsoft yahei', 'wenquanyi micro hei',sans-serif;
+}
+#wrap{
+  margin-bottom: 120px;
+}
+#usersCon{
+  text-align: center;
+}
+#onLineUsers{
+  list-style: none;
+  padding-left: 0;
+}
+#onLineUsers li{
+  color:orange;
+  cursor: pointer;
+}
+#onLineUsers li:hover{
+  color:red;
+}
+#onLineUsers .split{
+  cursor: default;
+  margin: .5rem auto;
+  width: 60%;
+  border-bottom: 1px solid #333;
+}
+@media (max-width:992px){
+  #onLineUsers li{
+    display: inline-block;
+  }
+  #onLineUsers .split{
+    margin: 0 .5rem;
+    width: auto;
+    height: 1rem;
+    border-right: 1px solid #333;
+  }
+}
+#msgForm{
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: auto;
+  margin: 0 5%;
+}
+#msgCon{
+  font-size: 1.2rem;
+  height: 100%;
+}
+#chatStatus{
+  text-align: center;
+  margin: .5rem auto;
+}
+.oneMsgBox{
+  border-bottom:  1px solid #ccc;
+  padding: .5rem 0 1rem 0;
+}
+#sendBtn{
+  width: 100%;
+}
