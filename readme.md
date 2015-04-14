@@ -1,6 +1,6 @@
 Chatting
 ===================================
-Using Node.js and Socket.io, with help of Angular and Bootstrap
+Using Node.js and Socket.io, with help of Vue and Bootstrap
 -----------------------------------
 
 ```

@@ -10,17 +10,18 @@
   <body>
     <div class="container" id="wrap">
       <div class="row">
-        <div class="col-md-2" id="usersCon">
-          <div>——在线用户——</div>
-          <ul id="onLineUsers">
-            <li v-repeat="users" class="user" title="与{{name}}聊天">{{name}}</li>
-            <li class="user" title="与hear聊天">hear</li>
-            <li class="split"></li>
-            <li class="mulTalk" title="回到群聊">回到群聊</li>
-          </ul>
+        <div class="col-md-2">
+            <div id="usersCon">
+            <div>——在线用户——</div>
+            <ul id="onLineUsers">
+              <li v-repeat="users" class="user" title="与{{name}}聊天">{{name}}<span class="badge">{{badge}}</span></li>
+              <li class="split"></li>
+              <li class="mulTalk" title="回到群聊">回到群聊</li>
+            </ul>
+          </div>
         </div>
         <div class="col-md-10">
-          <div id="msgCon" data-target="mul">
+          <div id="msgCon" data-target="multi">
             <h2 id="chatStatus">现在正在群聊中</h2>
             <div v-repeat="msgs" class="oneMsgBox">
               <div class="">

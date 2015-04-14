@@ -11,7 +11,6 @@ app.set('port', process.env.PORT || 3000);
 
 /*define where static files are*/
 app.use(express.static(__dirname + '/app'));
-//app.use(express.static(path.join(__dirname, 'app')));
 
 /*session settings*/
 /*app.use(session({
@@ -29,43 +28,65 @@ app.get('/', function(req, res){
 });
 
 /*server functions*/
-var num = 0;
+var clients = {
+	sockets:[],
+	users:[]
+};
 io.on('connection',function(socket){
 	console.log('an user here!');
-	socket.broadcast.emit('welcome');
+	socket.emit('welcome',clients.users);
+	/*sending messages*/
 	socket.on('sendAllMessage',function(text,name){
 		/*text.split('\/n').join('<br/>');*/
-		var date = new Date();
-		var hour = date.getHours();
-		var min = date.getMinutes();
-		var sec = date.getSeconds();
-		if(hour.length === 1) hour = '0'+hour;
-		if(min.length === 1) min = '0'+min;
-		if(sec.length === 1) sec = '0'+sec;
 		var msg = {
 			name:name,
-			time:hour+':'+min+':'+sec,
+			time:getTime(),
 			text:text
 		}
 		io.emit('sendAllMessage',msg);
-		console.log('message:' + text);
+		console.log('messageToAll:' + text);
 	});
-	socket.on('newUser',function(name){
-		var date = new Date();
-		var hour = date.getHours();
-		var min = date.getMinutes();
-		var sec = date.getSeconds();
-		if(hour.length === 1) hour = '0'+hour;
-		if(min.length === 1) min = '0'+min;
-		if(sec.length === 1) sec = '0'+sec;
-		var user = {
-			time:hour+':'+min+':'+sec,
-			name:name
+	socket.on('sendOneMessage',function(text,name,target){
+		var msg = {
+			name:name,
+			time:getTime(),
+			text:text
 		}
+		for(var i = 0;i<clients.sockets.length;i++){
+			if(clients.users[i] === target){
+				socket.emit('sendOneMessage',msg,target);
+				clients.sockets[i].emit('sendOneMessage',msg);
+			}
+		}
+		console.log('messageTo'+target+':' + text);
+	})
+	socket.on('newUser',function(name){
+		var user = {
+			time:getTime(),
+			name:'系统',
+			text:name
+		}
+		clients.sockets.push(socket);
+		clients.users.push(name);
 		io.emit('newUser',user);
 	})
 	socket.on('disconnect',function(){
 		console.log('an user left!');
+		var name = '';
+		for(var i = 0;i<clients.sockets.length;i++){
+			if(clients.sockets[i] === socket){
+				name = clients.users[i];
+				clients.sockets.splice(i,1);
+				clients.users.splice(i,1);
+
+			}
+		}
+		var disconnectUser = {
+			time:getTime(),
+			name:'系统',
+			text:name
+		}
+		io.emit('userDisconnect',clients.users,disconnectUser);
 	});
 })
 
@@ -73,6 +94,17 @@ io.on('connection',function(socket){
 	console.log(handshakeData.headers);
 	accept(null,true);
 });	*/
+
+function getTime(){
+	var date = new Date();
+	var hour = date.getHours();
+	var min = date.getMinutes();
+	var sec = date.getSeconds();
+	if((''+hour).length === 1) hour = '0'+hour;
+	if((''+min).length === 1) min = '0'+min;
+	if((''+sec).length === 1) sec = '0'+sec;
+	return hour+':'+min+':'+sec;
+}
 
 /*get start*/
 http.listen(app.get('port'), function(){
